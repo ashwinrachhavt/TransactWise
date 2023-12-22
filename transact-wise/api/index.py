@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body, Request
+from fastapi import FastAPI, Body, Request, UploadFile, File
 import pandas as pd
 import numpy as np
 from skllm.config import SKLLMConfig
@@ -6,6 +6,12 @@ from skllm import ZeroShotGPTClassifier
 import os
 
 import dotenv
+
+from pydantic import BaseModel
+
+class TextModel(BaseModel):
+    text: str
+
 
 dotenv_path = "/workspaces/TransactWise/transact-wise/.env"
 dotenv.load_dotenv(dotenv_path)
@@ -28,12 +34,24 @@ def healthchecker():
 
 # Prediction endpoint for text classification
 @app.post("/api/classify")
-async def classify_text(text: str, request: Request):
-    # Validate input text
+async def classify_text(text_model: TextModel):
+    text = text_model.text
     if not text:
-        return request.state.bad_request({"error": "Text cannot be empty."})
+        return {"error": "Text cannot be empty."}
 
-    # Predict label and return response
     predicted_label = clf.predict([text])[0]
     return {"predicted_label": predicted_label}
+
+
+@app.post("/api/classify-file")
+async def classify_text(file: UploadFile = File(...)):
+    dataframe = pd.read_csv(file.file)
+    # Assume dataframe has a 'Description' column for classification
+    descriptions = dataframe['Description'].tolist()
+    
+    predicted_categories = clf.predict(descriptions)
+
+    # Add predictions to dataframe and return as JSON
+    dataframe['PredictedCategory'] = predicted_categories
+    return dataframe.to_dict(orient='records')
 

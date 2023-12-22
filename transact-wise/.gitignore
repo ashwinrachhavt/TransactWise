@@ -13,7 +13,8 @@ transact-wise/venv
 # next.js
 /.next/
 /out/
-
+transact-wise/.env.example
+./.env.example
 # production
 /build
 
@@ -35,3 +36,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Sentry Config File
+.sentryclirc
