@@ -1,5 +1,6 @@
 'use client';
 
+
 import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Accounts from '@/components/Accounts';
