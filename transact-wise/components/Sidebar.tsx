@@ -1,3 +1,4 @@
+// components/Sidebar.tsx
 import { useState } from 'react';
 import { useUser } from "@clerk/nextjs";
 import { Dialog, DialogContent, DialogTitle, TextField, Button, DialogActions } from '@mui/material';
@@ -34,7 +35,6 @@ const Sidebar = ({ setCurrentPage }: SidebarProps) => {
       setAnswer(data.text);
       setQuestion('');
     } catch (error) {
-      console.error('Error:', error.message);
       setAnswer('Error fetching data');
     } finally {
       setLoading(false); // Reset loading state

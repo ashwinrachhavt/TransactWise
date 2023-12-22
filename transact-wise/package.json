@@ -38,7 +38,8 @@
     "prisma": "^5.7.1",
     "react": "^18",
     "react-dom": "^18",
-    "uploadthing": "^6.1.0"
+    "uploadthing": "^6.1.0",
+    "vercel": "^33.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -1,5 +1,5 @@
 // pages/api/qa.js
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server"; // Import json from next/server
 import { CSVLoader } from "langchain/document_loaders/fs/csv";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
@@ -23,18 +23,18 @@ export async function POST(req : NextRequest, res : NextResponse) {
 
     // Retrieval QA Chain
     const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
-    // console.log(splitDocs);
-    const { question } = req.body;
+    console.log(req.body);
     
+    const body = await req.json() // Parse req.body as JSON
+    const { question } = body; // Destructure question from body
     console.log(question); // Log the question variable
     const response = await chain.call({ query: question });
     console.log(response); // Log the response variable
     return NextResponse.json(response); // Use NextResponse.json() instead of res.json()
   } catch (error) {
     console.error('Error:', error); // Log the error
-    return NextResponse.status(500).json({ error: 'Internal Server Error' }); // Use NextResponse.status() instead of res.status()
+    return NextResponse.json({ error: 'Internal Server Error' }); // Use NextResponse.status() instead of res.status()
   }
 }
-
 
 // You can add more functions for other HTTP methods if needed
