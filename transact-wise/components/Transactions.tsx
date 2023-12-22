@@ -9,11 +9,12 @@ import { Dialog, DialogContent, DialogTitle, TextField, DialogActions } from '@m
 
 interface Transaction {
   id: number;
-  date: string;
-  description: string;
-  amount: number;
-  balance: number;
-  category: string;
+  Date: string;
+  Description: string;
+  Amount: number;
+  Balance: number;
+  Category: string;
+  predictedCategory: string;
 }
 
 const Transactions: React.FC = () => {
@@ -32,12 +33,8 @@ const Transactions: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState(null);
 
-  const [selectedFile, setSelectedFile] = useState(null);
 
-  const onFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
-
+  
 
   useEffect(() => {
     fetch("/api/transactions")
@@ -51,7 +48,7 @@ const Transactions: React.FC = () => {
         console.log("Received data:", data); // Log the received data
         if (data && Array.isArray(data)) {
           setTransactions(data);
-          const uniqueCategories = Array.from(new Set(data.map((t: Transaction) => t.category)));
+          const uniqueCategories = Array.from(new Set(data.map((t: Transaction) => t.Category)));
           setCategories(uniqueCategories);
         } else {
           setError("Invalid data format received from the API");
@@ -96,27 +93,6 @@ const Transactions: React.FC = () => {
     const data = await response.json();
     setAnswer(data.text);
   };
-  
-
-
-  const uploadFile = async (event) => {
-    const file = event.target.files[0];
-    const bucket = "transactions"
-
-    // Call Storage API to upload file
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .upload(file.name, file);
-
-    // Handle error if upload failed
-    if(error) {
-      alert('Error uploading file.', error.message);
-      return;
-    }
-
-    alert('File uploaded successfully!');
-  };
-
 
 
   if (loading) {
