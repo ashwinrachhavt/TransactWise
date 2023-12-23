@@ -17,6 +17,10 @@ transact-wise/.env.example
 ./.env.example
 # production
 /build
+venv
+.env
+./.env
+/workspaces/TransactWise/transact-wise/.env
 
 # misc
 .DS_Store
