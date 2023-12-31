@@ -17,9 +17,9 @@ transact-wise/.env.example
 ./.env.example
 # production
 /build
-venv
-.env
+.envm
 ./.env
+transact-wise/.env
 /workspaces/TransactWise/transact-wise/.env
 
 # misc
@@ -41,5 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Sentry Config File
+# Sentry Config Fd ile
 .sentryclirc
+
+# Idea
+.idea
+.env

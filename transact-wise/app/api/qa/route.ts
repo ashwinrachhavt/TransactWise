@@ -8,7 +8,7 @@ import { RetrievalQAChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 
 // Your initialization logic can be shared
-const loader = new CSVLoader("/workspaces/TransactWise/transact-wise/public/Sample_Full_Transactions_Positive.csv"); // Use CSVLoader instead of CheerioWebBaseLoader
+const loader = new CSVLoader("/projects/bo/TransactWise/transact-wise/api/Sample_Full_Transactions_Positive.csv"); // Use CSVLoader instead of CheerioWebBaseLoader
 const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 500 });
 const embeddings = new OpenAIEmbeddings();
 const model = new ChatOpenAI({ modelName: "gpt-4" });
