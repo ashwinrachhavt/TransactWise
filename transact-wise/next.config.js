@@ -1,22 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    rewrites: async () => {
-        return [
-            // { source: '/api/classify', destination: 'http://127.0.0.1:8000/api/classify' },
-            // { source : '/api/classify-file', destination: 'http://127.0.0.1:8000/api/classify-file'},
-            // { source : '/api/docs', destination: 'http://127.0.0.1:8000/api/docs'},
-            // { source : '/api/healtchecker', destination: 'http://127.0.0.1:8000/api/healthchecker'},
+    // rewrites: async () => {
+    //     return [
+    //         // { source: '/api/classify', destination: 'http://127.0.0.1:8000/api/classify' },
+    //         // { source : '/api/classify-file', destination: 'http://127.0.0.1:8000/api/classify-file'},
+    //         // { source : '/api/docs', destination: 'http://127.0.0.1:8000/api/docs'},
+    //         // { source : '/api/healtchecker', destination: 'http://127.0.0.1:8000/api/healthchecker'},
             
-            {
-                source: '/api/:path*',
-                destination: 
-                    process.env.NODE_ENV === 'development'
-                        ? 'http://127.0.0.1:8000/api/:path*'
-                        : '/api/:path*',
-            },
-        ];
+    //         {
+    //             source: '/api/:path*',
+    //             destination: 
+    //                 process.env.NODE_ENV === 'development'
+    //                     ? 'http://127.0.0.1:8000/api/:path*'
+    //                     : '/api/:path*',
+    //         },
+    //     ];
               
-    }
+    // }
 };
 
 module.exports = nextConfig;

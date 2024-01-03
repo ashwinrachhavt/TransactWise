@@ -21,7 +21,9 @@ venv
 .env
 ./.env
 /workspaces/TransactWise/transact-wise/.env
-
+/workspaces/TransactWise/transact-wise/.env
+.env
+./env
 # misc
 .DS_Store
 *.pem

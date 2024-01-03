@@ -63,7 +63,7 @@ const Transactions: React.FC = () => {
 
   const handleTextPrediction = async (description: string, id: number) => {
     try {
-      const response = await fetch('/api/classify', {
+      const response = await fetch('https://scikitllmtransactwise.onrender.com/api/classify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

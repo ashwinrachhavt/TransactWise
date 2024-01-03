@@ -2,21 +2,32 @@
 import { NextRequest, NextResponse } from "next/server"; // Import json from next/server
 import { CSVLoader } from "langchain/document_loaders/fs/csv";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { RetrievalQAChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai"
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+interface SplitDocument {
+  text: string;
+  // other properties...
+}
+
 
 // Your initialization logic can be shared
 const loader = new CSVLoader("/workspaces/TransactWise/transact-wise/public/Sample_Full_Transactions_Positive.csv"); // Use CSVLoader instead of CheerioWebBaseLoader
 const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 500 });
-const embeddings = new OpenAIEmbeddings();
 const model = new ChatOpenAI({ modelName: "gpt-4" });
 
-export async function POST(req : NextRequest, res : NextResponse) {
+export async function POST(req: NextRequest, res: NextResponse ) { // Export your function as the default export
   try {
     const data = await loader.load(); // Load the CSV data
     const splitDocs = await textSplitter.splitDocuments(data);
+    // Get the texts from the splitDocs
+    const texts = splitDocs;
+
+    // Get the embeddings from the OpenAI API
+    const embeddings = new OpenAIEmbeddings(); // Use get_embeddings function
 
     // Embeddings and Vector Store
     const vectorStore = await MemoryVectorStore.fromDocuments(splitDocs, embeddings);

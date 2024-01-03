@@ -1,0 +1,150 @@
+// Accounts component
+import React, { useState } from 'react';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import CardActions from '@mui/material/CardActions';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import useSWR from 'swr';
+import { useUser } from '@clerk/nextjs';
+
+interface AccountCardProps {
+  title: string;
+  description: string;
+}
+
+const AccountCard: React.FC<AccountCardProps> = ({ title, description }) => (
+  <Card sx={{ minWidth: 275, margin: 2, backgroundColor: '#f5f5f5' }}>
+    <CardContent>
+      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+        {title}
+      </Typography>
+      <Typography variant="h5" component="div">
+        {description}
+      </Typography>
+    </CardContent>
+    <CardActions>
+      <Button size="small">Learn More</Button>
+    </CardActions>
+  </Card>
+);
+
+const Accounts: React.FC = () => {
+  // Define the state for the form
+  const [accountType, setAccountType] = useState('');
+  const [balance, setBalance] = useState('');
+
+  // Get the current user
+  const { user, loading } = useUser();
+
+  // Define the fetcher function for the useSWR hook
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+
+  // Use the useSWR hook to fetch the account data from the route
+  const { data, error, mutate } = useSWR(
+    user ? `/api/accounts?user_id=${user.id}` : null, // Use the user id as the key
+    fetcher, // Use the fetcher function as the fetcher
+    { revalidateOnFocus: false } // Disable revalidation on focus
+  );
+
+  // Handle the form input changes
+  const handleAccountTypeChange = (event) => {
+    setAccountType(event.target.value);
+  };
+
+  const handleBalanceChange = (event) => {
+    setBalance(event.target.value);
+  };
+
+  // Handle the form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // Insert the account data into the database using the POST method
+    const response = await fetch('/api/account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: user.id,
+        account_type: accountType,
+        balance: balance,
+      }),
+    });
+    const data = await response.json();
+    // Update the data locally using the mutate function
+    mutate([...data, data[0]], false);
+    // Reset the form state
+    setAccountType('');
+    setBalance('');
+  };
+
+  // Handle the + or - button click
+  const handleOperation = async (account_id, amount, operation) => {
+    // Update the account data in the database using the PUT method
+    const response = await fetch('/api/accounts', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: account_id,
+        user_id: user.id,
+        amount: amount,
+        operation: operation,
+      }),
+    });
+    const data = await response.json();
+    // Update the data locally using the mutate function
+    mutate(data, false);
+  };
+
+  // Check if the user is loading or not signed in
+  if (loading || !user) {
+    return <div>Please sign in to view your accounts.</div>;
+  }
+
+  // Check if there is an error fetching the data
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return (
+    <div>
+      {data.length === 0 ? (
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Account Type"
+            value={accountType}
+            onChange={handleAccountTypeChange}
+            required
+          />
+          <TextField
+            label="Balance"
+            value={balance}
+            onChange={handleBalanceChange}
+            required
+          />
+          <Button type="submit">Submit</Button>
+        </form>
+      ) : (
+        data.map((account) => (
+          // Use a React.Fragment as the parent element
+          <>
+            <AccountCard
+              key={account.id}
+              title={account.account_type}
+              description={account.balance}
+            />
+            <Button onClick={() => handleOperation(account.id, 10, '+')}>
+              +
+            </Button>
+            <Button onClick={() => handleOperation(account.id, 10, '-')}>
+              -
+            </Button>
+          </>
+        ))
+      )}
+    </div>
+  );
+};
+
+
+export default Accounts;
